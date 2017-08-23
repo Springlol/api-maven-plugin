@@ -64,9 +64,6 @@ public class SpringMvcGenerator implements Generator {
         }
         //request对象处理
         for (FieldComment comment : methodComment.getMethodArgumentComments()) {
-            if ("object".equals(comment.getTypeName())) {
-                log.warn(comment.getName());
-            }
             executeNestedField(sb, comment, tab);
         }
 
