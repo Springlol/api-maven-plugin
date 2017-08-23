@@ -75,14 +75,14 @@ public class TypeUtils {
      */
     public static String initTypeArgs(Type type) {
         String typeValue = typeValue(type.simpleTypeName());
-        if ("string".equals(typeValue)) {
+        if ("Date".equals(type.simpleTypeName())) {
+            return "2017-08-22";
+        } else if ("string".equals(typeValue)) {
             return "null";
         } else if ("number".equals(typeValue)) {
             return "1";
         } else if ("boolean".equals(typeValue)) {
             return "true";
-        } else if ("Date".equals(type.simpleTypeName())) {
-            return "2017-08-22";
         } else {
             return null;
         }

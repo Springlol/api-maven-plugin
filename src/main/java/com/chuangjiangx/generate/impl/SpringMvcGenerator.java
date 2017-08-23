@@ -45,9 +45,9 @@ public class SpringMvcGenerator implements Generator {
                  BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(fos))
             ) {
                 bw.write(sb.toString());
-
-                Runtime.getRuntime().exec("CMD /c aglio -i "+mdFile.getAbsolutePath()+" -o "+mdFile.getParentFile().getAbsolutePath()+"\\"+classComment.getClassName()+".html");
-
+                Runtime.getRuntime().exec("CMD /c aglio -i "
+                        + mdFile.getAbsolutePath() + " -o " + mdFile.getParentFile().getAbsolutePath()
+                        + "\\" + classComment.getClassName() + ".html");
             } catch (Exception ex) {
                 log.error("解析生成MD文件异常");
             }

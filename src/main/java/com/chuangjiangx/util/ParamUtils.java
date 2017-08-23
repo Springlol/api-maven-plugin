@@ -45,6 +45,16 @@ public class ParamUtils {
                     log.error("未找到{}的源文件",qualifiedTypeName);
                     continue;
                 }
+                ClassDoc superclass = classDoc.superclass();
+                if (superclass != null) {
+                    //处理父类中字段
+                    FieldDoc[] fields = superclass.fields(false);
+                    for (FieldDoc field : fields) {
+                        FieldComment superParamComment = new FieldComment();
+                        superParamComment.inspectField(field,2);
+                        fieldComments.add(superParamComment);
+                    }
+                }
                 FieldDoc[] fields = classDoc.fields(false);
                 for (FieldDoc field : fields) {
                     FieldComment paramComment = new FieldComment();
