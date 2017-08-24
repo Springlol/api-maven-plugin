@@ -36,6 +36,7 @@ public class TypeUtils {
             put("Date", "string");
             put("HttpServletResponse", "object");
             put("MultipartFile", "object");
+            put("BindingResult","object");
         }
     };
     //对应md中数组类型

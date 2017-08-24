@@ -45,7 +45,7 @@ public class MethodComment extends AbstractComment {
      * 解析方法
      */
     public void inspectMethod(MethodDoc methodDoc) {
-        this.setComment(methodDoc.commentText());
+        this.setComment(methodDoc.commentText() == null ? "(请添加注释信息)" : methodDoc.commentText() );
         this.setRawComment(methodDoc.getRawCommentText());
         //处理methodMapping
         String methodMapping = findMethodAnnotationValue(methodDoc, RequestMapping.class, "value");

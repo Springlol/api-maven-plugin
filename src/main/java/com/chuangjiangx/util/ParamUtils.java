@@ -32,8 +32,10 @@ public class ParamUtils {
     public static List<FieldComment> inspectParam(RootDoc rootDoc, MethodDoc methodDoc) {
         List<FieldComment> fieldComments = new ArrayList<>();
         for (Parameter parameter : methodDoc.parameters()) {
-            //忽略Session参数
-            if ("HttpSession".equals(parameter.typeName()) || "HttpServletResponse".equals(parameter.typeName())) {
+            //忽略Session等形参
+            if ("HttpSession".equals(parameter.typeName())
+                    || "HttpServletResponse".equals(parameter.typeName())
+                    || "BindingResult".equals(parameter.typeName())) {
                 continue;
             }
             String typeValue = typeValue(parameter.type().simpleTypeName());
@@ -42,7 +44,7 @@ public class ParamUtils {
                 String qualifiedTypeName = parameter.type().qualifiedTypeName();
                 ClassDoc classDoc = rootDoc.classNamed(qualifiedTypeName);
                 if (classDoc == null) {
-                    log.error("未找到{}的源文件",qualifiedTypeName);
+                    log.error("未找到{}的源文件", qualifiedTypeName);
                     continue;
                 }
                 ClassDoc superclass = classDoc.superclass();
@@ -51,7 +53,7 @@ public class ParamUtils {
                     FieldDoc[] fields = superclass.fields(false);
                     for (FieldDoc field : fields) {
                         FieldComment superParamComment = new FieldComment();
-                        superParamComment.inspectField(field,2);
+                        superParamComment.inspectField(field, 2);
                         fieldComments.add(superParamComment);
                     }
                 }
@@ -119,7 +121,7 @@ public class ParamUtils {
                         List<FieldComment> dataComments = new ArrayList<>();
                         for (FieldDoc fieldDoc : fieldDocs) {
                             FieldComment dataComment = new FieldComment();
-                            dataComment.inspectField(fieldDoc,3);
+                            dataComment.inspectField(fieldDoc, 3);
                             dataComments.add(dataComment);
                         }
                         comment.setFieldComments(dataComments);

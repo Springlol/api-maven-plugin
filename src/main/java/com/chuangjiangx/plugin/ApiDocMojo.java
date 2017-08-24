@@ -133,7 +133,7 @@ public class ApiDocMojo extends AbstractMojo {
         log.info(Arrays.asList(commandArray).toString());
         int status = Main.execute(commandArray);
         if (status != 0) {
-            this.getLog().error("执行javadoc失败");
+            this.getLog().error("请完善javadoc注释");
         }
     }
 
