@@ -45,7 +45,13 @@ public class SpringMvcIntrospect implements Introspect {
             for (MethodDoc methodDoc : methodDocs) {
                 MethodComment methodComment = new MethodComment();
                 methodComment.inspectMethod(methodDoc);
-                methodComment.setUri(classComment.getRequestMapping() + methodComment.getRequestMapping());
+                String classCommentRequestMapping = classComment.getRequestMapping();
+                String methodCommentRequestMapping = methodComment.getRequestMapping();
+                if (StringUtils.isBlank(classCommentRequestMapping)) {
+                    methodComment.setUri(methodCommentRequestMapping);
+                } else {
+                    methodComment.setUri(classCommentRequestMapping + methodCommentRequestMapping);
+                }
 
                 //处理形参
                 List<FieldComment> comments = ParamUtils.inspectParam(rootDoc, methodDoc);
