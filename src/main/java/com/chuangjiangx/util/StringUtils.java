@@ -35,4 +35,19 @@ public class StringUtils {
             return true;
         }
     }
+
+    /**
+     * 对多行注释信息进行按行切分
+     */
+    public static String[] linesSplit (String comment) {
+        if (isBlank(comment)) {
+            return null;
+        }
+        int index = comment.indexOf("\n");
+        if (index == -1){
+            return new String[]{comment};
+        }
+        return new String[]{comment.substring(0,index),comment.substring(index+1)};
+    }
+
 }

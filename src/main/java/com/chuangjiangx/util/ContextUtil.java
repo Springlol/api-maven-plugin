@@ -6,6 +6,7 @@ import java.util.Map;
 /**
  * @author Tzhou on 2017/8/19.
  */
+@SuppressWarnings("all")
 public class ContextUtil {
     private static Map<String,String> CONTEXT_MAP = new HashMap<>();
 

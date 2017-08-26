@@ -5,6 +5,7 @@ import com.chuangjiangx.model.ClassComment;
 import com.chuangjiangx.model.FieldComment;
 import com.chuangjiangx.model.MethodComment;
 import com.chuangjiangx.util.ContextUtil;
+import com.chuangjiangx.util.StringUtils;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -98,11 +99,14 @@ public class SpringMvcGenerator implements Generator {
     }
 
     private String executePostMethod(MethodComment methodComment, StringBuilder sb) {
-        sb.append("## ").append(methodComment.getComment()).append("  [")
+        String[] linesSplit = StringUtils.linesSplit(methodComment.getComment());
+        sb.append("## ").append(linesSplit == null ? "完善注释信息":linesSplit[0]).append("  [")
                 .append(methodComment.getRequestMethod()).append(" ")
                 .append(methodComment.getUri());
-
-        sb.append(" ] \n \n");
+        sb.append(" ] \n");
+        if (linesSplit != null && linesSplit.length > 1) {
+            sb.append(linesSplit[1]).append("\n");
+        }
         sb.append("+ Request (application/json) ").append("\n");
         sb.append("\n");
         sb.append("    + Attributes").append("\n");
@@ -111,16 +115,19 @@ public class SpringMvcGenerator implements Generator {
 
 
     private String executeGetMethod(MethodComment methodComment, StringBuilder sb) {
-        sb.append("## ").append(methodComment.getComment()).append("  [")
+        String[] linesSplit = StringUtils.linesSplit(methodComment.getComment());
+        sb.append("## ").append(linesSplit == null ? "完善注释信息":linesSplit[0]).append("  [")
                 .append(methodComment.getRequestMethod()).append(" ")
                 .append(methodComment.getUri());
-
         sb.append("{?");
         for (FieldComment comment : methodComment.getMethodArgumentComments()) {
             sb.append(comment.getName()).append(",");
         }
         sb.deleteCharAt(sb.length() - 1);
         sb.append("}]\n");
+        if (linesSplit != null && linesSplit.length > 1) {
+            sb.append(linesSplit[1]).append("\n");
+        }
         sb.append("\n");
         sb.append("+ Parameters").append("\n");
         sb.append("\n");
