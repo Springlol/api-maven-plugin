@@ -26,9 +26,13 @@ public class ClassComment extends AbstractComment {
      * 类名
      */
     private String className;
-
+    /**
+     * 类映射
+     */
     private String requestMapping;
-
+    /**
+     * 响应文本类型
+     */
     private String produces;
 
     /**

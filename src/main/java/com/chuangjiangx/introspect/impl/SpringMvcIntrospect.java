@@ -52,7 +52,7 @@ public class SpringMvcIntrospect implements Introspect {
                 } else {
                     methodComment.setUri(classCommentRequestMapping + methodCommentRequestMapping);
                 }
-
+                methodComment.setReqContentType(ParamUtils.detectContentType(methodDoc));
                 //处理形参
                 List<FieldComment> comments = ParamUtils.inspectParam(rootDoc, methodDoc);
                 methodComment.setMethodArgumentComments(comments);
@@ -60,7 +60,7 @@ public class SpringMvcIntrospect implements Introspect {
                 FieldComment fieldComment = ParamUtils.inspectReturn(methodDoc);
                 String produces = StringUtils.replaceQuotes(
                         findMethodAnnotationValue(methodDoc, RequestMapping.class, "produces"));
-                fieldComment.setContentType(produces == null ? classComment.getProduces() : produces);
+                methodComment.setRespContentType(produces == null ? classComment.getProduces() : produces);
                 methodComment.setMethodReturnComment(fieldComment);
 
                 methodCommentList.add(methodComment);

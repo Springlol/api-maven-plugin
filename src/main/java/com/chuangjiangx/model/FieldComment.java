@@ -36,22 +36,14 @@ public class FieldComment extends AbstractComment {
      * 字段类型
      */
     private String typeName;
-
     /**
      * 是否必须,默认为false
      */
     private boolean required = false;
-
-    /**
-     * 返回http文本类型
-     */
-    private String contentType;
-
     /**
      * 当前字段类型为对象类型
      */
     private List<FieldComment> fieldComments = new ArrayList<>();
-
     /**
      * 字段例子值
      */

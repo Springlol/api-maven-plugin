@@ -37,7 +37,7 @@ public class TypeUtils {
             put("String", "string");
             put("Date", "string");
             put("HttpServletResponse", "object");
-            put("MultipartFile", "object");
+            put("MultipartFile", "string");
             put("BindingResult","object");
         }
     };

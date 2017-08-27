@@ -26,12 +26,22 @@ public class MethodComment extends AbstractComment {
      * 请求uri
      */
     private String uri;
-
+    /**
+     * 请求映射
+     */
     private String requestMapping;
     /**
      * http请求方法
      */
     private String requestMethod;
+    /**
+     * 请求文本类型
+     */
+    private String reqContentType;
+    /**
+     * 响应文本类型
+     */
+    private String respContentType;
     /**
      * 参数注释
      */

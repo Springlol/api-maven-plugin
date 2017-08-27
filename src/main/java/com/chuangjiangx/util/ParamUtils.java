@@ -4,6 +4,7 @@ import static com.chuangjiangx.util.StringUtils.replaceQuotes;
 import static com.chuangjiangx.util.TypeUtils.initTypeArgs;
 import static com.chuangjiangx.util.TypeUtils.typeValue;
 
+import com.chuangjiangx.model.ContentType;
 import com.chuangjiangx.model.FieldComment;
 
 import com.sun.javadoc.ClassDoc;
@@ -15,9 +16,11 @@ import com.sun.javadoc.RootDoc;
 import com.sun.javadoc.SeeTag;
 import com.sun.javadoc.Tag;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -25,6 +28,24 @@ import java.util.List;
  */
 @Slf4j
 public class ParamUtils {
+
+    /**
+     * 解析请求文本类型
+     */
+    public static String detectContentType(MethodDoc methodDoc) {
+        Parameter[] parameters = methodDoc.parameters();
+        for (Parameter parameter : parameters) {
+            if (parameter.type().simpleTypeName().equals("MultipartFile")) {
+                return ContentType.FORM_DATA.content;
+            }
+            if (DocUtils.isHaveAnno(parameter, RequestBody.class)) {
+                return ContentType.RAW_JSON.content;
+            }
+        }
+        //默认类型
+        return ContentType.X_WWW_FORM_URLENCODED.content;
+    }
+
 
     /**
      * 解析形参
@@ -96,18 +117,24 @@ public class ParamUtils {
             if (typeValue(methodDoc.returnType().simpleTypeName()) == null) {
                 Tag[] arrTags = methodDoc.tags("@map");
                 SeeTag[] seeTags = methodDoc.seeTags();
-
                 ClassDoc classDoc = methodDoc.returnType().asClassDoc();
                 FieldDoc[] fields = classDoc.fields(false);
-                for (FieldDoc field : fields) {
+                ClassDoc superclass = classDoc.superclass();
+                List<FieldDoc> fieldDocList = new ArrayList<>();
+                fieldDocList.addAll(Arrays.asList(fields));
+                if (superclass != null) {
+                    FieldDoc[] superFields = superclass.fields(false);
+                    fieldDocList.addAll(Arrays.asList(superFields));
+                }
+                for (FieldDoc field : fieldDocList) {
                     FieldComment comment = new FieldComment();
-
                     if (field.type().simpleTypeName().equals("Object")) {
                         //操作Response中的data字段
                         if (seeTags.length == 0) {
                             log.error("响应对象中的Object对象类型未知,{}缺少@see类型注解", methodDoc.name());
                             continue;
                         }
+                        //TODO...只处理第一个@map，@see注解
                         ClassDoc dataDoc = seeTags[0].referencedClass();
                         FieldDoc[] fieldDocs = dataDoc.fields(false);
                         comment.setComment(field.commentText());
@@ -150,5 +177,6 @@ public class ParamUtils {
             fieldComment.setTypeName(typeValue(methodDoc.returnType().simpleTypeName()));
         }
     }
+
 
 }

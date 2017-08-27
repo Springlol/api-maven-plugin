@@ -1,12 +1,12 @@
 package com.chuangjiangx.util;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import com.sun.javadoc.AnnotationDesc;
 import com.sun.javadoc.ClassDoc;
 import com.sun.javadoc.FieldDoc;
 import com.sun.javadoc.MethodDoc;
 import com.sun.javadoc.Parameter;
+import com.sun.javadoc.ProgramElementDoc;
 import com.sun.javadoc.RootDoc;
 
 import java.util.ArrayList;
@@ -134,6 +134,32 @@ public class DocUtils {
             }
         }
         return null;
+    }
+
+    /**
+     * 是否有指定类型注解
+     */
+    public static boolean isHaveAnno(ProgramElementDoc elementDoc, Class annoClass) {
+        AnnotationDesc[] annotations = elementDoc.annotations();
+        for (AnnotationDesc annotation : annotations) {
+            if (isEqual(annotation, annoClass)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 是否有指定类型注解
+     */
+    public static boolean isHaveAnno(Parameter param,Class annoClass) {
+        AnnotationDesc[] annotations = param.annotations();
+        for (AnnotationDesc annotation : annotations) {
+            if (isEqual(annotation,annoClass)) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

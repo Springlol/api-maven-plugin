@@ -79,7 +79,7 @@ public class SpringMvcGenerator implements Generator {
             sb.append("\n");
             return;
         }
-        String contentType = returnComment.getContentType();
+        String contentType = methodComment.getRespContentType();
         contentType = contentType == null ? "application/json" : contentType;
 
         sb.append("+ Response 200 (").append(contentType).append(") \n");
@@ -108,9 +108,11 @@ public class SpringMvcGenerator implements Generator {
             sb.append(linesSplit[1]).append("\n");
         }
         sb.append("\n");
-        sb.append("+ Request (application/json) ").append("\n");
+        sb.append("+ Request (").append(methodComment.getReqContentType()).append(") \n");
         sb.append("\n");
-        sb.append("    + Attributes").append("\n");
+        if (methodComment.getMethodArgumentComments().size() > 0) {
+            sb.append("    + Attributes").append("\n");
+        }
         return TAB + TAB;
     }
 
@@ -120,18 +122,20 @@ public class SpringMvcGenerator implements Generator {
         sb.append("## ").append(linesSplit == null ? "完善注释信息" : linesSplit[0]).append("  [")
                 .append(methodComment.getRequestMethod()).append(" ")
                 .append(methodComment.getUri());
-        sb.append("{?");
-        for (FieldComment comment : methodComment.getMethodArgumentComments()) {
-            sb.append(comment.getName()).append(",");
+        if (methodComment.getMethodArgumentComments().size() > 0) {
+            sb.append("{?");
+            for (FieldComment comment : methodComment.getMethodArgumentComments()) {
+                sb.append(comment.getName()).append(",");
+            }
+            sb.deleteCharAt(sb.length() - 1);
+            sb.append("}]\n");
+            if (linesSplit != null && linesSplit.length > 1) {
+                sb.append(linesSplit[1]).append("\n");
+            }
+            sb.append("\n");
+            sb.append("+ Parameters");
         }
-        sb.deleteCharAt(sb.length() - 1);
-        sb.append("}]\n");
-        if (linesSplit != null && linesSplit.length > 1) {
-            sb.append(linesSplit[1]).append("\n");
-        }
-        sb.append("\n");
-        sb.append("+ Parameters").append("\n");
-        sb.append("\n");
+        sb.append("\n \n");
         return TAB;
     }
 
