@@ -2,7 +2,9 @@ package com.chuangjiangx.util;
 
 import com.sun.javadoc.Type;
 
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -77,9 +79,10 @@ public class TypeUtils {
     public static String initTypeArgs(Type type) {
         String typeValue = typeValue(type.simpleTypeName());
         if ("Date".equals(type.simpleTypeName())) {
-            return "2017-08-22";
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            return sdf.format(new Date());
         } else if ("string".equals(typeValue)) {
-            return "null";
+            return "default";
         } else if ("number".equals(typeValue)) {
             return "1";
         } else if ("boolean".equals(typeValue)) {
