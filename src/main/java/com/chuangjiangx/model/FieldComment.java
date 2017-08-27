@@ -106,7 +106,6 @@ public class FieldComment extends AbstractComment {
                 log.error("请指定{}集合字段的泛型类型", fieldDoc.name());
             } else {
                 Type[] types = parameterizedType.typeArguments();
-                //TODO...未处理泛型类型为基本类型
                 if (! isCommonType(types[0].simpleTypeName())) {
                     //如果集合泛型类型为对象类型
                     ClassDoc classDoc = types[0].asClassDoc();
@@ -115,6 +114,9 @@ public class FieldComment extends AbstractComment {
                     } else {
                         inspectModel(classDoc, times);
                     }
+                } else {
+                    //泛型为基本类型
+                    this.arg = initTypeArgs(types[0]);
                 }
             }
         } else {
