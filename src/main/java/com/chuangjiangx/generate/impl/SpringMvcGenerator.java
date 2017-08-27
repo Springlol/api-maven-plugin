@@ -100,13 +100,14 @@ public class SpringMvcGenerator implements Generator {
 
     private String executePostMethod(MethodComment methodComment, StringBuilder sb) {
         String[] linesSplit = StringUtils.linesSplit(methodComment.getComment());
-        sb.append("## ").append(linesSplit == null ? "完善注释信息":linesSplit[0]).append("  [")
+        sb.append("## ").append(linesSplit == null ? "完善注释信息" : linesSplit[0]).append("  [")
                 .append(methodComment.getRequestMethod()).append(" ")
                 .append(methodComment.getUri());
         sb.append(" ] \n");
         if (linesSplit != null && linesSplit.length > 1) {
             sb.append(linesSplit[1]).append("\n");
         }
+        sb.append("\n");
         sb.append("+ Request (application/json) ").append("\n");
         sb.append("\n");
         sb.append("    + Attributes").append("\n");
@@ -116,7 +117,7 @@ public class SpringMvcGenerator implements Generator {
 
     private String executeGetMethod(MethodComment methodComment, StringBuilder sb) {
         String[] linesSplit = StringUtils.linesSplit(methodComment.getComment());
-        sb.append("## ").append(linesSplit == null ? "完善注释信息":linesSplit[0]).append("  [")
+        sb.append("## ").append(linesSplit == null ? "完善注释信息" : linesSplit[0]).append("  [")
                 .append(methodComment.getRequestMethod()).append(" ")
                 .append(methodComment.getUri());
         sb.append("{?");
