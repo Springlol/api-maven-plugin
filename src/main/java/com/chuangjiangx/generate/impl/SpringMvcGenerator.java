@@ -74,7 +74,9 @@ public class SpringMvcGenerator implements Generator {
     //返回值对象处理
     private void executeResponse(MethodComment methodComment, StringBuilder sb) {
         FieldComment returnComment = methodComment.getMethodReturnComment();
-        if (returnComment == null || "void".equals(returnComment.getTypeName())) {
+        if (returnComment == null
+                || "void".equals(returnComment.getTypeName())
+                || returnComment.getTypeName() == null) {
             sb.append("+ Response 200 (application/json)").append("\n");
             sb.append("\n");
             return;

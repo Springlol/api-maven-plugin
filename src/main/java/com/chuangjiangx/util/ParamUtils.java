@@ -56,6 +56,7 @@ public class ParamUtils {
             //忽略Session等形参
             if ("HttpSession".equals(parameter.typeName())
                     || "HttpServletResponse".equals(parameter.typeName())
+                    || "HttpServletRequest".equals(parameter.typeName())
                     || "BindingResult".equals(parameter.typeName())) {
                 continue;
             }
