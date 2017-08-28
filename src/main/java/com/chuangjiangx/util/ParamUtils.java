@@ -158,6 +158,7 @@ public class ParamUtils {
                 returnComment(methodDoc, fieldComment);
             } else {
                 //返回值为基本类型
+                fieldComment.setTypeName(methodDoc.returnType().simpleTypeName());
                 log.info("{}接口返回值为基本类型,未做处理", methodDoc.name());
             }
         }

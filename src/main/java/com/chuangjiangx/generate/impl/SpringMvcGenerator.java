@@ -6,6 +6,7 @@ import com.chuangjiangx.model.FieldComment;
 import com.chuangjiangx.model.MethodComment;
 import com.chuangjiangx.util.ContextUtil;
 import com.chuangjiangx.util.StringUtils;
+import com.chuangjiangx.util.TypeUtils;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -76,7 +77,7 @@ public class SpringMvcGenerator implements Generator {
         FieldComment returnComment = methodComment.getMethodReturnComment();
         if (returnComment == null
                 || "void".equals(returnComment.getTypeName())
-                || returnComment.getTypeName() == null) {
+                || TypeUtils.isCommonType(returnComment.getTypeName())) {
             sb.append("+ Response 200 (application/json)").append("\n");
             sb.append("\n");
             return;

@@ -1,6 +1,7 @@
 package com.chuangjiangx.model;
 
 import static com.chuangjiangx.util.DocUtils.isHaveNotNull;
+import static com.chuangjiangx.util.DocUtils.jsonPropertyValue;
 import static com.chuangjiangx.util.StringUtils.replaceQuotes;
 import static com.chuangjiangx.util.TypeUtils.initTypeArgs;
 import static com.chuangjiangx.util.TypeUtils.isArray;
@@ -82,6 +83,10 @@ public class FieldComment extends AbstractComment {
         if (isHaveNotNull(fieldDoc)) {
             this.required = true;
         }
+
+        if (jsonPropertyValue(fieldDoc) != null) {
+            this.name = replaceQuotes(jsonPropertyValue(fieldDoc));
+        }
     }
 
     /**
@@ -98,7 +103,7 @@ public class FieldComment extends AbstractComment {
                 log.error("请指定{}集合字段的泛型类型", fieldDoc.name());
             } else {
                 Type[] types = parameterizedType.typeArguments();
-                if (! isCommonType(types[0].simpleTypeName())) {
+                if (!isCommonType(types[0].simpleTypeName())) {
                     //如果集合泛型类型为对象类型
                     ClassDoc classDoc = types[0].asClassDoc();
                     if (classDoc == null) {
