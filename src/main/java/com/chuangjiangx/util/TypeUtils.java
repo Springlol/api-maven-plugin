@@ -34,6 +34,8 @@ public class TypeUtils {
             put("double", "number");
             put("Double", "number");
             put("BigDecimal", "number");
+            put("BigInteger", "number");
+            put("Number", "number");
             put("String", "string");
             put("Date", "string");
             put("HttpServletResponse", "object");
