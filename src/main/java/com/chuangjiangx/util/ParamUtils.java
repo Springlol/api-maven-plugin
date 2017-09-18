@@ -126,6 +126,9 @@ public class ParamUtils {
                 }
                 for (FieldDoc field : fieldDocList) {
                     FieldComment comment = new FieldComment();
+                    if (field.isFinal()) {
+                        continue;
+                    }
                     if (field.type().simpleTypeName().equals("Object")) {
                         //操作Response中的data字段
                         if (seeTags.length == 0) {
