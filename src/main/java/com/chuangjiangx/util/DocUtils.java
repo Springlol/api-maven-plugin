@@ -8,6 +8,7 @@ import com.sun.javadoc.MethodDoc;
 import com.sun.javadoc.Parameter;
 import com.sun.javadoc.ProgramElementDoc;
 import com.sun.javadoc.RootDoc;
+import org.hibernate.validator.constraints.NotEmpty;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -107,8 +108,13 @@ public class DocUtils {
         return null;
     }
 
-    private static boolean isEqual(AnnotationDesc annotationDesc, Class annotationClass) {
-        return annotationDesc.annotationType().qualifiedTypeName().equals(annotationClass.getName());
+    private static boolean isEqual(AnnotationDesc annotationDesc, Class... annotationClass) {
+        for (Class aClass : annotationClass) {
+            if (annotationDesc.annotationType().qualifiedTypeName().equals(aClass.getName())){
+                return true;
+            };
+        }
+        return false;
     }
 
     /**
@@ -119,7 +125,7 @@ public class DocUtils {
     public static boolean isHaveNotNull(FieldDoc fieldDoc) {
         AnnotationDesc[] annotations = fieldDoc.annotations();
         for (AnnotationDesc annotation : annotations) {
-            if (isEqual(annotation, NotNull.class)) {
+            if (isEqual(annotation, NotNull.class, NotEmpty.class)) {
                 return true;
             }
         }
