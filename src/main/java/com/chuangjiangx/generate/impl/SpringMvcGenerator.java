@@ -25,11 +25,15 @@ import java.util.List;
 public class SpringMvcGenerator implements Generator {
     private static final String TAB = "    ";
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Override
     public void generate(List<ClassComment> classComments) {
         for (ClassComment classComment : classComments) {
-            File mdFile = new File(ContextUtil.get(ContextUtil.OUTPUT_KEY) + "/" + classComment.getClassName() + ".md");
-
+            File filePath = new File(ContextUtil.get(ContextUtil.OUTPUT_KEY));
+            if (!filePath.exists()) {
+                filePath.mkdirs();
+            }
+            File mdFile = new File(filePath, classComment.getClassName() + ".md");
             StringBuilder sb = new StringBuilder();
             sb.append("FORMAT: 1A").append("\n");
             sb.append("# ").append(classComment.getComment()).append("\n");
@@ -103,7 +107,8 @@ public class SpringMvcGenerator implements Generator {
 
     private String executePostMethod(MethodComment methodComment, StringBuilder sb) {
         String[] linesSplit = StringUtils.linesSplit(methodComment.getComment());
-        sb.append("## ").append(linesSplit == null ? "完善注释信息" : linesSplit[0]).append("  [")
+        String isp = getMethodComment(linesSplit);
+        sb.append("## ").append(isp).append("  [")
                 .append(methodComment.getRequestMethod()).append(" ")
                 .append(methodComment.getUri());
         sb.append(" ] \n");
@@ -122,7 +127,8 @@ public class SpringMvcGenerator implements Generator {
 
     private String executeGetMethod(MethodComment methodComment, StringBuilder sb) {
         String[] linesSplit = StringUtils.linesSplit(methodComment.getComment());
-        sb.append("## ").append(linesSplit == null ? "完善注释信息" : linesSplit[0]).append("  [")
+        String isp = getMethodComment(linesSplit);
+        sb.append("## ").append(isp).append("  [")
                 .append(methodComment.getRequestMethod()).append(" ")
                 .append(methodComment.getUri());
         if (methodComment.getMethodArgumentComments().size() > 0) {
@@ -140,6 +146,19 @@ public class SpringMvcGenerator implements Generator {
         }
         sb.append("\n \n");
         return TAB;
+    }
+
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    private String getMethodComment(String[] linesSplit) {
+        String isp;
+        if (linesSplit != null && linesSplit.length > 0) {
+            isp = linesSplit[0];
+            isp = isp.replace("(", "（");
+            isp = isp.replace(")","）");
+        } else {
+            isp = "请完善注释信息";
+        }
+        return isp;
     }
 
     //生成嵌套对象
