@@ -15,6 +15,7 @@ import java.util.List;
 import javax.validation.constraints.NotNull;
 
 /**
+ * javaDoc文档工具类
  * @author Tzhou on 2017/8/19.
  */
 @SuppressWarnings("all")

@@ -24,6 +24,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
+ * 形参工具类
  * @author Tzhou on 2017/8/22.
  */
 @Slf4j
@@ -83,7 +84,7 @@ public class ParamUtils {
                     fieldComments.add(paramComment);
                 }
             } else {
-                //TODO...简单类型形参（只判断基本类型，date和String）
+                //TODO...简单类型形参（只判断基本类型，date和String） //TODO。。。rest URI
                 FieldComment fieldComment = new FieldComment();
                 fieldComment.setTypeName(typeValue(parameter.type().simpleTypeName()));
                 fieldComment.setRequired(true);

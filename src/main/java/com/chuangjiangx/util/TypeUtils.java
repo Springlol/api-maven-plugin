@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Objects;
 
 /**
+ * 基本类型工具
  * @author Tzhou on 2017/8/19.
  */
 public class TypeUtils {

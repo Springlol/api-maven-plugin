@@ -84,7 +84,7 @@ public class ApiDocMojo extends AbstractMojo {
      * @parameter expression="${targetClass}"
      * @required
      */
-    private List<String> targetClasses = new ArrayList<>();
+    private String targetClass;
     /**
      * @parameter expression="${output}"
      * @required
@@ -128,7 +128,8 @@ public class ApiDocMojo extends AbstractMojo {
         commandArgumentList.addAll(Arrays.asList("-classpath", classpath));
 
         //commandArgumentList.addAll(Arrays.asList("-subpackages", this.basePackage));
-        commandArgumentList.addAll(this.targetClasses);
+        //commandArgumentList.addAll(this.targetClasses);
+        commandArgumentList.add(this.targetClass);
         String[] commandArray = commandArgumentList.toArray(new String[commandArgumentList.size()]);
         log.info(Arrays.asList(commandArray).toString());
         int status = Main.execute(commandArray);

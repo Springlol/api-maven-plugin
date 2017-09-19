@@ -27,6 +27,10 @@ public class MethodComment extends AbstractComment {
      */
     private String uri;
     /**
+     * 请求uri是否为rest风格,默认为普通类型
+     */
+    private boolean isRest = false;
+    /**
      * 请求映射
      */
     private String requestMapping;
@@ -63,6 +67,10 @@ public class MethodComment extends AbstractComment {
             methodMapping = "/" + methodMapping;
         }
         this.requestMapping = replaceQuotes(methodMapping);
+        //处理请求uri是否为rest风格
+        if (methodMapping.contains("{") && methodMapping.contains("}")) {
+            this.isRest = true;
+        }
         //处理RequestMethod
         String requestMethod = findMethodAnnotationValue(methodDoc, RequestMapping.class, "method");
         if (requestMethod != null) {

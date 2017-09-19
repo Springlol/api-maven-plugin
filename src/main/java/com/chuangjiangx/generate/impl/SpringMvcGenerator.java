@@ -69,10 +69,11 @@ public class SpringMvcGenerator implements Generator {
             tab = executePostMethod(methodComment, sb);
         }
         //request对象处理
-        for (FieldComment comment : methodComment.getMethodArgumentComments()) {
-            executeNestedField(sb, comment, tab);
+        if (!methodComment.isRest()) {
+            for (FieldComment comment : methodComment.getMethodArgumentComments()) {
+                executeNestedField(sb, comment, tab);
+            }
         }
-
         sb.append("\n");
     }
 
@@ -116,12 +117,33 @@ public class SpringMvcGenerator implements Generator {
             sb.append(linesSplit[1]).append("\n");
         }
         sb.append("\n");
-        sb.append("+ Request (").append(methodComment.getReqContentType()).append(") \n");
-        sb.append("\n");
-        if (methodComment.getMethodArgumentComments().size() > 0) {
-            sb.append("    + Attributes").append("\n");
+        if (methodComment.isRest()) {
+            executeRest(methodComment, sb);
+            sb.append("+ Request (").append(methodComment.getReqContentType()).append(") \n");
+            sb.append("\n");
+        } else {
+            sb.append("+ Request (").append(methodComment.getReqContentType()).append(") \n");
+            sb.append("\n");
+            if (methodComment.getMethodArgumentComments().size() > 0) {
+                sb.append("    + Attributes").append("\n");
+            }
         }
         return TAB + TAB;
+    }
+
+    private void executeRest(MethodComment methodComment, StringBuilder sb) {
+        if (methodComment.isRest()) {
+            sb.append("+ Parameters").append("\n");
+            sb.append("\n");
+            List<FieldComment> argumentComments = methodComment.getMethodArgumentComments();
+            for (FieldComment argumentComment : argumentComments) {
+                sb.append(TAB).append("+ ").append(argumentComment.getName()).append(":`")
+                        .append(argumentComment.getArg()).append("` (")
+                        .append(argumentComment.getTypeName()).append(") -")
+                        .append(argumentComment.getComment()).append("\n");
+                sb.append("\n");
+            }
+        }
     }
 
 
@@ -154,7 +176,7 @@ public class SpringMvcGenerator implements Generator {
         if (linesSplit != null && linesSplit.length > 0) {
             isp = linesSplit[0];
             isp = isp.replace("(", "（");
-            isp = isp.replace(")","）");
+            isp = isp.replace(")", "）");
         } else {
             isp = "请完善注释信息";
         }
