@@ -42,6 +42,7 @@ public class TypeUtils {
             put("HttpServletResponse", "object");
             put("MultipartFile", "string");
             put("BindingResult","object");
+            put("ModelAndView","object");
         }
     };
     //对应md中数组类型

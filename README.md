@@ -1,92 +1,109 @@
-# API文档生成的maven插件
-对SpringMVC框架接口生成Blueprint格式的md文档
-
-支持框架：SpringMVC
-
-**在pom.xml中增加**
+## pulgin引用
 ```
 <plugin>
-        <groupId>com.chuangjiangx.plugin</groupId>
-        <artifactId>api-generate</artifactId>
-        <version>1.3.0</version>
-        <configuration>
-            <baseClass>
-                com.chuangjiangx.agent.controller.user
-                <!--${project.build.sourceDirectory}/com/chuangjiangx/agent/controller/user-->
-            </baseClass>
-            <output>${project.basedir}/apid</output>
-            <resources>
-                <resource>${project.build.sourceDirectory}</resource>
-            </resources>
-        </configuration>
-    </plugin>
+    <groupId>com.chuangjiangx.plugin</groupId>
+    <artifactId>api-generate</artifactId>
+    <version>1.3.3</version>
+    <configuration>
+        <targetClass>${project.build.sourceDirectory}/com/chuangjiangx/polypay/availability/controller/LklMerchantController.java</targetClass>
+        <output>${project.basedir}/api-doc</output>
+        <resources>
+            <resource>${project.build.sourceDirectory}</resource>
+            <resource>${project.parent.basedir}\poly-pay-common\src\main\java</resource>
+        </resources>
+    </configuration>
+</plugin>
 ```
-# 配置参数说明
-- baseClass 指定生成的包或者类，支持指定类或者包操作。例如
-  1. com.chuangjiangx.agent.controller.user 指定需要生成的包名
-  2. ${project.build.sourceDirectory}/com/chuangjiangx/agent/controller/user/UserController.java  指定要生成的java
+## 参数配置
+1. <targetClass>...</targetClass>  
+需要生成文档的java类,只对@Controller和@RestController类起作用。
+    a. 生成单个类。${project.build.sourceDirectory}/包名/类名.java
+    b. 生成某一包下的多个类。 包名。 例如：com.chuangjiangx.agent.controller.user
 
-- output 指定生成的md文件的存放目录，需要手动创建文件夹
-    例如：${project.basedir}/apid
-- resources  指定扫描包或者类的源文件地址
-    例如：<resource>${project.build.sourceDirectory}</resource>
+2. <output>...</output>
+生成文档输出目录
 
+3. <resources>...</resources>
+待生成类的源码路径，以及源码依赖包的目录,例如:
+<resource>${project.build.sourceDirectory}</resource>
 
-
-# JAVA代码注释规则
-
-- 方法注释
-    1. /** ... */  接口描述
-    2. @param paramName  设置参数描述
-    3. @see qulifiedTypeName 设置响应response中data字段类型。
-    4. @map string 如果响应response中的data字段类型为List，使用该注解。
-
-```
-    //data为单个对象
-    @see User
-    {
-        "isSuccess":true,
-        "err_code":"1000",
-        "err_msg":"错误描述",
-        "data":
-            {
-                "id":1,
-                "name":"张三"
-            }
-    }
-    
-    //data为List<User>集合
+## java类使用
+1. 正常添加类、方法、字段注释信息。
+2. 对于Response中的data字段为Object类型无法知道运行时类型。
+    a. @map 标注 data 类型解析json时的 名称
+    b. @see 如果data类型为对象类型，则使用该注解表明类型
+例如:
+    ```
     /**
-    * @map users
-    * @see User
+    * 模糊查询银行信息
+    *
+    * @param bankName 搜索条件
+    * @return 搜索结果
+    * @see LklBankInfoDTO
     */
-    {
-        "isSuccess":true,
-            "err_code":"1000",
-            "err_msg":"错误描述",
-            "users": [
-                {
-                    "id":1,
-                    "name":""名称
-                }
-            ]
-    }
+   @RequestMapping(value = "/search-bank-list", produces = "application/json")
+   @Login
+   public Response searchBankInfo(@RequestParam String bankName) {
+       List<LklBankInfoDTO> list = signLklPolyMerchantApplication.searchBankInfo(bankName);
+       return Response.success(list);
+   }
+    ```
+生成结果:
+
+```
++ Response 200 (application/json)
+
+    + Attributes
+        + success:`true` (boolean,optional) -
+        + errCode:`default` (string,optional) -
+        + errMsg:`default` (string,optional) -
+        + otherMsg:`default` (string,optional) -
+        + data (object, optional) -
+            + bankName:`default` (string,optional) -
+            + openingBank:`default` (string,optional) -
+            + clearingBank:`default` (string,optional) -
 ```
 
-- 字段注释规则
-    1. /** ... */ 字段描述
-    2. @arg 生成时字段值举例
-    
+
+3. Controller中的接收响应对象字段描述信息。例如
 ```
     /**
-    * 姓名
-    * @arg zhangsan
+    * 商户姓名
+    * @arg 测试01
     */
-    private String name;
-    
-    {
-        ...
-        "name":"zhangsan"
-    }
+    @NotEmpty
+   private String merchantName;
+```
+生成结果:
+
+```
++ Request (application/json)
+
+    + Attributes
+        + merchantName:`测试01` (string,required) - 商户姓名
+
 ```
 
+4. 支持@JsonProperty("")属性转换
+```
+    /**
+    * 商户姓名
+    * @arg 测试01
+    */
+    @JsonProperty("name")
+   private String merchantName;
+```
+生成结果:
+
+```
++ Request (application/json)
+
+    + Attributes
+        + name:`测试01` (string,optional) - 商户姓名
+
+```
+
+## 存在问题：
+1. 方法注释中不要带英文()号 
+
+2. 响应对象中data对象为array时 该数组中的对象属性描述不会显示
