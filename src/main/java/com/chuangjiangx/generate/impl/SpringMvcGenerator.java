@@ -39,6 +39,7 @@ public class SpringMvcGenerator implements Generator {
             sb.append("# ").append(classComment.getComment()).append("\n");
             sb.append("\n");
             sb.append("# Group ").append(classComment.getComment()).append("\n");
+            sb.append("\n");
             sb.append("--------------------------------------").append("\n");
             sb.append("\n");
 
