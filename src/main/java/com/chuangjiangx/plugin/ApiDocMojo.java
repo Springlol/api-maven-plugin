@@ -230,8 +230,12 @@ public class ApiDocMojo extends AbstractMojo {
             List<File> dependencyFileList = new ArrayList<>();
             for (Artifact artifact : artifactList) {
                 String groupPath = artifact.getGroupId().replace(".", File.separator);
+                String version = artifact.getVersion();
+                if (artifact.isSnapshot()) {
+                    version = artifact.getBaseVersion();
+                }
                 String jarPath = mavenLocalRepoPath + groupPath + File.separator
-                        + artifact.getArtifactId() + File.separator + artifact.getVersion()
+                        + artifact.getArtifactId() + File.separator + version
                         + File.separator + artifact.getArtifactId() + "-" + artifact.getVersion() + ".jar";
                 dependencyFileList.add(new File(jarPath));
             }
