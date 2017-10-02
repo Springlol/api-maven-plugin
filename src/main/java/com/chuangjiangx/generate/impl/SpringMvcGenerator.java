@@ -17,7 +17,7 @@ import java.io.OutputStreamWriter;
 import java.util.List;
 
 /**
- * 生成md文档
+ * 生成文档
  *
  * @author Tzhou on 2017/8/22.
  */
@@ -52,9 +52,14 @@ public class SpringMvcGenerator implements Generator {
                  BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(fos))
             ) {
                 bw.write(sb.toString());
-                Runtime.getRuntime().exec("CMD /c aglio -i "
+
+                String command = "";
+                if (System.getProperty("os.name").startsWith("W")) {
+                    command = "CMD /c ";
+                }
+                Runtime.getRuntime().exec(command + "aglio -i "
                         + mdFile.getAbsolutePath() + " -o " + mdFile.getParentFile().getAbsolutePath()
-                        + "\\" + classComment.getClassName() + ".html");
+                        + "/" + classComment.getClassName() + ".html");
             } catch (Exception ex) {
                 log.error("解析生成MD文件异常");
             }
