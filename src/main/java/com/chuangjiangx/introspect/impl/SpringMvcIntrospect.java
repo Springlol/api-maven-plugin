@@ -47,7 +47,7 @@ public class SpringMvcIntrospect implements Introspect {
                 Object o = ContextUtil.get(ContextUtil.FILTER_METHODS_KEY);
                 if (o != null && o instanceof List) {
                     List methods = (List) o;
-                    if (! methods.contains(methodDoc.name())) {
+                    if (methods.size() > 0 && (! methods.contains(methodDoc.name()))) {
                         continue;
                     }
                 }
