@@ -2,6 +2,8 @@ package com.chuangjiangx.util;
 
 import static com.chuangjiangx.util.StringUtils.replaceQuotes;
 import static com.chuangjiangx.util.TypeUtils.initTypeArgs;
+import static com.chuangjiangx.util.TypeUtils.isArray;
+import static com.chuangjiangx.util.TypeUtils.isCommonType;
 import static com.chuangjiangx.util.TypeUtils.typeValue;
 
 import com.chuangjiangx.model.ContentType;
@@ -96,7 +98,7 @@ public class ParamUtils {
                 }
                 String value = DocUtils.findParamAnnotionValue(parameter, RequestParam.class, "value");
                 fieldComment.setName(value == null ? parameter.name() : replaceQuotes(value));
-                fieldComment.setArg(initTypeArgs(parameter.type()));
+                fieldComment.setArg(initTypeArgs(parameter.type().simpleTypeName()));
                 fieldComments.add(fieldComment);
             }
         }
@@ -106,6 +108,7 @@ public class ParamUtils {
 
     /**
      * 解析返回值
+     * TODO 方法太复杂，待优化
      */
     public static FieldComment inspectReturn(MethodDoc methodDoc) {
         FieldComment fieldComment = new FieldComment();
@@ -114,7 +117,7 @@ public class ParamUtils {
             fieldComment.setTypeName("void");
         } else {
             if (typeValue(methodDoc.returnType().simpleTypeName()) == null) {
-                Tag[] arrTags = methodDoc.tags("@map");
+                Tag[] mapTags = methodDoc.tags("@map");
                 SeeTag[] seeTags = methodDoc.seeTags();
                 ClassDoc classDoc = methodDoc.returnType().asClassDoc();
                 FieldDoc[] fields = classDoc.fields(false);
@@ -136,24 +139,71 @@ public class ParamUtils {
                             log.error("响应对象中的Object对象类型未知,{}缺少@see类型注解", methodDoc.name());
                             continue;
                         }
-                        //TODO...只处理第一个@map，@see注解
-                        ClassDoc dataDoc = seeTags[0].referencedClass();
-                        FieldDoc[] fieldDocs = dataDoc.fields(false);
                         comment.setComment(field.commentText());
-                        if (arrTags.length > 0) {
-                            comment.setTypeName("array");
-                            comment.setName(arrTags[0].text());
+                        comment.setName(field.name());
+                        if (mapTags.length > 0) {
+                            //map注解为1个时，表示data对象类型为list
+                            if (mapTags.length == 1) {
+                                comment.setTypeName("array");
+                                comment.setName(mapTags[0].text());
+                                ClassDoc dataDoc = seeTags[0].referencedClass();
+                                FieldDoc[] fieldDocs = dataDoc.fields(false);
+                                List<FieldComment> dataComments = new ArrayList<>();
+                                for (FieldDoc fieldDoc : fieldDocs) {
+                                    FieldComment dataComment = new FieldComment();
+                                    dataComment.inspectField(fieldDoc, 3);
+                                    dataComments.add(dataComment);
+                                }
+                                comment.setFieldComments(dataComments);
+                            } else {
+                                //多个map注解时，表示data对象类型为map
+                                comment.setTypeName("object");
+                                List<FieldComment> comments = new ArrayList<>();
+                                for (int i = 0; i < mapTags.length; i++) {
+                                    if (seeTags.length - 1 < i) {
+                                        continue;
+                                    }
+                                    FieldComment fcomment = new FieldComment();
+                                    String mapName = mapTags[i].text();
+                                    String[] split = mapName.split(" ");
+                                    fcomment.setName(split[0]);
+                                    fcomment.setTypeName("object");
+                                    if (split.length > 1) {
+                                        if (isArray(split[1])) {
+                                            fcomment.setTypeName("array");
+                                        }
+                                    }
+                                    List<FieldComment> fcomments = new ArrayList<>();
+                                    ClassDoc refClassDoc = seeTags[i].referencedClass();
+                                    if (isCommonType(refClassDoc.simpleTypeName())) {
+                                        fcomment.setTypeName(typeValue(refClassDoc.simpleTypeName()));
+                                        fcomment.setArg(initTypeArgs(refClassDoc.simpleTypeName()));
+                                        comments.add(fcomment);
+                                    } else {
+                                        FieldDoc[] fieldDocs = refClassDoc.fields(false);
+                                        for (FieldDoc fieldDoc : fieldDocs) {
+                                            FieldComment docComment = new FieldComment();
+                                            docComment.inspectField(fieldDoc, 3);
+                                            fcomments.add(docComment);
+                                        }
+                                        fcomment.setFieldComments(fcomments);
+                                        comments.add(fcomment);
+                                    }
+                                }
+                                comment.setFieldComments(comments);
+                            }
                         } else {
                             comment.setTypeName("object");
-                            comment.setName(field.name());
+                            ClassDoc dataDoc = seeTags[0].referencedClass();
+                            FieldDoc[] fieldDocs = dataDoc.fields(false);
+                            List<FieldComment> dataComments = new ArrayList<>();
+                            for (FieldDoc fieldDoc : fieldDocs) {
+                                FieldComment dataComment = new FieldComment();
+                                dataComment.inspectField(fieldDoc, 3);
+                                dataComments.add(dataComment);
+                            }
+                            comment.setFieldComments(dataComments);
                         }
-                        List<FieldComment> dataComments = new ArrayList<>();
-                        for (FieldDoc fieldDoc : fieldDocs) {
-                            FieldComment dataComment = new FieldComment();
-                            dataComment.inspectField(fieldDoc, 3);
-                            dataComments.add(dataComment);
-                        }
-                        comment.setFieldComments(dataComments);
                     } else {
                         comment.inspectField(field, 3);
                     }

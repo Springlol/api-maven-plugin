@@ -77,7 +77,7 @@ public class FieldComment extends AbstractComment {
         if (tags.length > 0) {
             this.arg = tags[0].text();
         } else {
-            this.arg = initTypeArgs(fieldDoc.type());
+            this.arg = initTypeArgs(fieldDoc.type().simpleTypeName());
         }
 
         if (isHaveNotNull(fieldDoc)) {
@@ -95,7 +95,7 @@ public class FieldComment extends AbstractComment {
     private void inspectObjectType(FieldDoc fieldDoc, int times) {
         --times;
         inspectCommonType(fieldDoc);
-        if (isArray(fieldDoc.type())) {
+        if (isArray(fieldDoc.type().simpleTypeName())) {
             //集合必须指定泛型类型
             this.typeName = "array";
             ParameterizedType parameterizedType = fieldDoc.type().asParameterizedType();
@@ -113,7 +113,7 @@ public class FieldComment extends AbstractComment {
                     }
                 } else {
                     //泛型为基本类型
-                    this.arg = initTypeArgs(types[0]);
+                    this.arg = initTypeArgs(types[0].simpleTypeName());
                 }
             }
         } else {

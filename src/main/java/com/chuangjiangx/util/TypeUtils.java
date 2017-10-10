@@ -1,7 +1,5 @@
 package com.chuangjiangx.util;
 
-import com.sun.javadoc.Type;
-
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
@@ -69,20 +67,20 @@ public class TypeUtils {
     /**
      * 是否是集合或者数组
      *
-     * @param type 类型
+     * @param typeName 类型
      * @return boolean
      */
-    public static boolean isArray(Type type) {
+    public static boolean isArray(String typeName) {
         List<String> list = Arrays.asList(arrays);
-        return list.contains(type.simpleTypeName());
+        return list.contains(typeName);
     }
 
     /**
      * 初始化参数类型值
      */
-    public static String initTypeArgs(Type type) {
-        String typeValue = typeValue(type.simpleTypeName());
-        if ("Date".equals(type.simpleTypeName())) {
+    public static String initTypeArgs(String typeName) {
+        String typeValue = typeValue(typeName);
+        if ("Date".equals(typeName)) {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
             return sdf.format(new Date());
         } else if ("string".equals(typeValue)) {
