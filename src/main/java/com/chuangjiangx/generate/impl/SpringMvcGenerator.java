@@ -29,7 +29,7 @@ public class SpringMvcGenerator implements Generator {
     @Override
     public void generate(List<ClassComment> classComments) {
         for (ClassComment classComment : classComments) {
-            File filePath = new File(ContextUtil.get(ContextUtil.OUTPUT_KEY));
+            File filePath = new File((String) ContextUtil.get(ContextUtil.OUTPUT_KEY));
             if (!filePath.exists()) {
                 filePath.mkdirs();
             }

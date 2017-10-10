@@ -9,6 +9,7 @@ import com.chuangjiangx.introspect.Introspect;
 import com.chuangjiangx.model.ClassComment;
 import com.chuangjiangx.model.FieldComment;
 import com.chuangjiangx.model.MethodComment;
+import com.chuangjiangx.util.ContextUtil;
 import com.chuangjiangx.util.ParamUtils;
 import com.chuangjiangx.util.StringUtils;
 
@@ -43,6 +44,13 @@ public class SpringMvcIntrospect implements Introspect {
             List<MethodDoc> methodDocs = findValidMethod(classDoc, RequestMapping.class);
             List<MethodComment> methodCommentList = new ArrayList<>();
             for (MethodDoc methodDoc : methodDocs) {
+                Object o = ContextUtil.get(ContextUtil.FILTER_METHODS_KEY);
+                if (o != null && o instanceof List) {
+                    List methods = (List) o;
+                    if (! methods.contains(methodDoc.name())) {
+                        continue;
+                    }
+                }
                 MethodComment methodComment = new MethodComment();
                 methodComment.inspectMethod(methodDoc);
                 String classCommentRequestMapping = classComment.getRequestMapping();

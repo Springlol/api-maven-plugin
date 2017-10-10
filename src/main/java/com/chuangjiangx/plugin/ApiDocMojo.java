@@ -102,6 +102,10 @@ public class ApiDocMojo extends AbstractMojo {
      * @required
      */
     private List<String> resources = new ArrayList<>();
+    /**
+     * @parameter expression="${method}"
+     */
+    private List<String> methods = new ArrayList<>();
 
     /**
      * @parameter expression="${project.build.sourceEncoding}"
@@ -114,6 +118,7 @@ public class ApiDocMojo extends AbstractMojo {
      */
     public void execute() throws MojoExecutionException, MojoFailureException {
         ContextUtil.put(ContextUtil.OUTPUT_KEY, output);
+        ContextUtil.put(ContextUtil.FILTER_METHODS_KEY,methods);
         String docletClassName = ApiDoclet.class.getName();
 
         List<String> commandArgumentList = new ArrayList<>();

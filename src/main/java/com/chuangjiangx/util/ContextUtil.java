@@ -8,15 +8,17 @@ import java.util.Map;
  */
 @SuppressWarnings("all")
 public class ContextUtil {
-    private static Map<String,String> CONTEXT_MAP = new HashMap<>();
+    private static Map<String,Object> CONTEXT_MAP = new HashMap<>();
 
     public static final String OUTPUT_KEY = "output";
 
-    public static String get(Object key) {
+    public static final String FILTER_METHODS_KEY = "methods";
+
+    public static Object get(Object key) {
         return CONTEXT_MAP.get(key);
     }
 
-    public static String put(String key, String value) {
+    public static Object put(String key, Object value) {
         return CONTEXT_MAP.put(key, value);
     }
 }
