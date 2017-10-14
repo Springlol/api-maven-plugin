@@ -193,16 +193,27 @@ public class ParamUtils {
                                 comment.setFieldComments(comments);
                             }
                         } else {
-                            comment.setTypeName("object");
                             ClassDoc dataDoc = seeTags[0].referencedClass();
-                            FieldDoc[] fieldDocs = dataDoc.fields(false);
-                            List<FieldComment> dataComments = new ArrayList<>();
-                            for (FieldDoc fieldDoc : fieldDocs) {
-                                FieldComment dataComment = new FieldComment();
-                                dataComment.inspectField(fieldDoc, 3);
-                                dataComments.add(dataComment);
+                            if (isCommonType(dataDoc.simpleTypeName())) {
+                                comment.setTypeName(typeValue(dataDoc.simpleTypeName()));
+                                comment.setName("data");
+                                Tag[] tags = methodDoc.tags("@return");
+                                if (tags == null || tags[0].text() == null) {
+                                    comment.setArg(initTypeArgs(dataDoc.simpleTypeName()));
+                                } else {
+                                    comment.setArg(tags[0].text());
+                                }
+                            } else {
+                                comment.setTypeName("object");
+                                FieldDoc[] fieldDocs = dataDoc.fields(false);
+                                List<FieldComment> dataComments = new ArrayList<>();
+                                for (FieldDoc fieldDoc : fieldDocs) {
+                                    FieldComment dataComment = new FieldComment();
+                                    dataComment.inspectField(fieldDoc, 3);
+                                    dataComments.add(dataComment);
+                                }
+                                comment.setFieldComments(dataComments);
                             }
-                            comment.setFieldComments(dataComments);
                         }
                     } else {
                         comment.inspectField(field, 3);
