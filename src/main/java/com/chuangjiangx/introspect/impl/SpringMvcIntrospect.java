@@ -5,6 +5,7 @@ import static com.chuangjiangx.util.DocUtils.findValidClass;
 import static com.chuangjiangx.util.DocUtils.findValidMethod;
 
 import com.chuangjiangx.generate.GeneratorFactory;
+import com.chuangjiangx.generate.MdType;
 import com.chuangjiangx.introspect.Introspect;
 import com.chuangjiangx.model.ClassComment;
 import com.chuangjiangx.model.FieldComment;
@@ -79,7 +80,17 @@ public class SpringMvcIntrospect implements Introspect {
 
         log.info(JSON.toJSONString(classCommentList));
         //生成文档
-        GeneratorFactory.mvcGenerator().generate(classCommentList);
+        MdType mdType = (MdType) ContextUtil.get(ContextUtil.MDTYPE_KEY);
+        switch (mdType) {
+            case STANDARD:
+                GeneratorFactory.standardGenerator().generate(classCommentList);
+                break;
+            case WITH_ANNO:
+                GeneratorFactory.withAnnoGenerator().generate(classCommentList);
+                break;
+            default:
+                GeneratorFactory.withAnnoGenerator().generate(classCommentList);
+        }
     }
 
 }

@@ -1,19 +1,14 @@
 package com.chuangjiangx.generate.impl;
 
-import com.chuangjiangx.generate.Generator;
+import com.chuangjiangx.generate.AbstractGenerator;
 import com.chuangjiangx.model.ClassComment;
 import com.chuangjiangx.model.FieldComment;
 import com.chuangjiangx.model.MethodComment;
-import com.chuangjiangx.util.ContextUtil;
 import com.chuangjiangx.util.StringUtils;
 import com.chuangjiangx.util.TypeUtils;
 
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.OutputStreamWriter;
 import java.util.List;
 
 /**
@@ -22,50 +17,26 @@ import java.util.List;
  * @author Tzhou on 2017/8/22.
  */
 @Slf4j
-public class SpringMvcGenerator implements Generator {
+public class StandardGenerator extends AbstractGenerator {
     private static final String TAB = "    ";
 
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Override
-    public void generate(List<ClassComment> classComments) {
-        for (ClassComment classComment : classComments) {
-            File filePath = new File((String) ContextUtil.get(ContextUtil.OUTPUT_KEY));
-            if (!filePath.exists()) {
-                filePath.mkdirs();
-            }
-            File mdFile = new File(filePath, classComment.getClassName() + ".md");
-            StringBuilder sb = new StringBuilder();
-            sb.append("FORMAT: 1A").append("\n");
-            sb.append("# ").append(classComment.getComment()).append("\n");
-            sb.append("\n");
-            sb.append("# Group ").append(classComment.getComment()).append("\n");
-            sb.append("\n");
-            sb.append("--------------------------------------").append("\n");
-            sb.append("\n");
+    protected StringBuilder generateStringBuilder(ClassComment classComment) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("FORMAT: 1A").append("\n");
+        sb.append("# ").append(classComment.getComment()).append("\n");
+        sb.append("\n");
+        sb.append("# Group ").append(classComment.getComment()).append("\n");
+        sb.append("\n");
+        sb.append("--------------------------------------").append("\n");
+        sb.append("\n");
 
-            for (MethodComment methodComment : classComment.getMethodComments()) {
-                executeRequest(methodComment, sb);
-                executeResponse(methodComment, sb);
-            }
-
-            try (FileOutputStream fos = new FileOutputStream(mdFile);
-                 BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(fos))
-            ) {
-                bw.write(sb.toString());
-
-                String command = "";
-                if (System.getProperty("os.name").startsWith("W")) {
-                    command = "CMD /c ";
-                }
-                Runtime.getRuntime().exec(command + "aglio -i "
-                        + mdFile.getAbsolutePath() + " -o " + mdFile.getParentFile().getAbsolutePath()
-                        + "/" + classComment.getClassName() + ".html");
-            } catch (Exception ex) {
-                log.error("解析生成MD文件异常");
-            }
+        for (MethodComment methodComment : classComment.getMethodComments()) {
+            executeRequest(methodComment, sb);
+            executeResponse(methodComment, sb);
         }
+        return sb;
     }
-
 
     private void executeRequest(MethodComment methodComment, StringBuilder sb) {
         String tab;

@@ -1,6 +1,7 @@
 package com.chuangjiangx.plugin;
 
 import com.chuangjiangx.doclet.ApiDoclet;
+import com.chuangjiangx.generate.MdType;
 import com.chuangjiangx.util.ContextUtil;
 
 import com.sun.tools.javadoc.Main;
@@ -106,7 +107,10 @@ public class ApiDocMojo extends AbstractMojo {
      * @parameter expression="${method}"
      */
     private List<String> methods = new ArrayList<>();
-
+    /**
+     * @parameter expression="${mdType}"
+     */
+    private String mdType;
     /**
      * @parameter expression="${project.build.sourceEncoding}"
      * @required
@@ -119,6 +123,7 @@ public class ApiDocMojo extends AbstractMojo {
     public void execute() throws MojoExecutionException, MojoFailureException {
         ContextUtil.put(ContextUtil.OUTPUT_KEY, output);
         ContextUtil.put(ContextUtil.FILTER_METHODS_KEY,methods);
+        ContextUtil.put(ContextUtil.MDTYPE_KEY, MdType.valueOf(mdType));
         String docletClassName = ApiDoclet.class.getName();
 
         List<String> commandArgumentList = new ArrayList<>();

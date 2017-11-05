@@ -14,6 +14,8 @@ public class ContextUtil {
 
     public static final String FILTER_METHODS_KEY = "methods";
 
+    public static final String MDTYPE_KEY = "mdType";
+
     public static Object get(Object key) {
         return CONTEXT_MAP.get(key);
     }
