@@ -20,6 +20,7 @@ public abstract class AbstractGenerator implements Generator {
     protected abstract StringBuilder generateStringBuilder(ClassComment classComment);
 
     @Override
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     public void generate(List<ClassComment> classComments) {
         for (ClassComment classComment : classComments) {
             File filePath = new File((String) ContextUtil.get(ContextUtil.OUTPUT_KEY));

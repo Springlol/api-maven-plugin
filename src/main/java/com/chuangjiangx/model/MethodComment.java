@@ -37,7 +37,7 @@ public class MethodComment extends AbstractComment {
     /**
      * http请求方法
      */
-    private String requestMethod;
+    private RequestMethod requestMethod;
     /**
      * 请求文本类型
      */
@@ -74,9 +74,10 @@ public class MethodComment extends AbstractComment {
         //处理RequestMethod
         String requestMethod = findMethodAnnotationValue(methodDoc, RequestMapping.class, "method");
         if (requestMethod != null) {
-            this.requestMethod = requestMethod.substring(requestMethod.lastIndexOf(".") + 1);
+            RequestMethod method = RequestMethod.getByName(requestMethod.substring(requestMethod.lastIndexOf(".") + 1));
+            this.requestMethod = method == null ? RequestMethod.POST : method;
         } else { //默认POST
-            this.requestMethod = "POST";
+            this.requestMethod = RequestMethod.POST;
         }
     }
 

@@ -26,9 +26,43 @@ public class ApiMdUtils {
 
 
     // ## 获取省市区  [POST /mybank-sign/list-region ]
-    public static String getMethodUrl(MethodComment methodComment) {
+    public static String getPostMethodUrl(MethodComment methodComment) {
         return "## " + methodComment.getComment() + "  [" + methodComment.getRequestMethod() + " " +
                 methodComment.getUri() + " ]";
+    }
+
+    public static String getGetMethodUrl(MethodComment methodComment) {
+        StringBuilder uri = new StringBuilder("## " + methodComment.getComment() + "  [GET " + methodComment.getUri());
+        List<FieldComment> args = methodComment.getMethodArgumentComments();
+        if (args != null && args.size() > 0) {
+            uri.append("?");
+            for (FieldComment arg : args) {
+                uri.append(arg.getName()).append("=").append(arg.getArg()).append("&");
+            }
+            uri.deleteCharAt(uri.length() - 1);
+        }
+        uri.append(" ]");
+        return uri.toString();
+    }
+
+
+    public static String getHeaders() {
+        return TAB + "+ Headers";
+    }
+
+
+    public static String getUrlParameters(MethodComment methodComment) {
+        StringBuilder sb = new StringBuilder("+ Parameters \n");
+        sb.append("\n");
+        List<FieldComment> args = methodComment.getMethodArgumentComments();
+        if (args != null && args.size() > 0) {
+            for (FieldComment arg : args) {
+                sb.append(TAB).append("+ ").append(arg.getName()).append(" (")
+                        .append(arg.getTypeName()).append(",").append(arg.isRequired() ? "required)" : "optional)")
+                        .append("  - ").append(arg.getComment()).append("\n");
+            }
+        }
+        return sb.toString();
     }
 
     // + Request (application/x-www-from-urlencoded)
@@ -42,7 +76,7 @@ public class ApiMdUtils {
             return "\n";
         }
         String body = TAB + "+ Body" + "\n" +
-                        "\n";
+                "\n";
         body += getFieldJson(argComments, TAB + TAB);
         return body;
     }
@@ -52,8 +86,8 @@ public class ApiMdUtils {
         return "+ Response 200 (" + methodComment.getRespContentType() + ")";
     }
 
-    private static String getFieldJson(List<FieldComment> fieldComments,String indent) {
-        StringBuilder sb = new StringBuilder(indent+"{ \n");
+    private static String getFieldJson(List<FieldComment> fieldComments, String indent) {
+        StringBuilder sb = new StringBuilder(indent + "{ \n");
         Iterator<FieldComment> iterator = fieldComments.iterator();
         while (iterator.hasNext()) {
             FieldComment fieldComment = iterator.next();
@@ -77,7 +111,7 @@ public class ApiMdUtils {
             if (iterator.hasNext()) {
                 sb.append(",");
             }
-            if (! ("object".equals(typeName) || "array".equals(typeName))) {
+            if (!("object".equals(typeName) || "array".equals(typeName))) {
                 sb.append(" - ").append(fieldComment.getComment());
             }
             sb.append("\n");

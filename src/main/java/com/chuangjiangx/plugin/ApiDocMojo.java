@@ -3,6 +3,7 @@ package com.chuangjiangx.plugin;
 import com.chuangjiangx.doclet.ApiDoclet;
 import com.chuangjiangx.generate.MdType;
 import com.chuangjiangx.util.ContextUtil;
+import com.chuangjiangx.util.StringUtils;
 
 import com.sun.tools.javadoc.Main;
 import lombok.Data;
@@ -109,6 +110,7 @@ public class ApiDocMojo extends AbstractMojo {
     private List<String> methods = new ArrayList<>();
     /**
      * @parameter expression="${mdType}"
+     *
      */
     private String mdType;
     /**
@@ -123,7 +125,11 @@ public class ApiDocMojo extends AbstractMojo {
     public void execute() throws MojoExecutionException, MojoFailureException {
         ContextUtil.put(ContextUtil.OUTPUT_KEY, output);
         ContextUtil.put(ContextUtil.FILTER_METHODS_KEY,methods);
-        ContextUtil.put(ContextUtil.MDTYPE_KEY, MdType.valueOf(mdType));
+        if (! StringUtils.isBlank(mdType)) {
+            ContextUtil.put(ContextUtil.MDTYPE_KEY, MdType.valueOf(mdType));
+        } else {
+            ContextUtil.put(ContextUtil.MDTYPE_KEY, MdType.WITH_ANNO);
+        }
         String docletClassName = ApiDoclet.class.getName();
 
         List<String> commandArgumentList = new ArrayList<>();
