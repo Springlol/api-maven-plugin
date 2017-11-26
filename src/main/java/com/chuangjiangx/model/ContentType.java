@@ -9,7 +9,9 @@ public enum ContentType {
     X_WWW_FORM_URLENCODED("application/x-www-from-urlencoded"),
     RAW_JSON("application/json"),
     RAW_XML("application/xml");
+
     public final String content;
+
     ContentType(String content) {
         this.content = content;
     }

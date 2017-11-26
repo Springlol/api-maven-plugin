@@ -24,7 +24,6 @@ public class ApiMdUtils {
                 "\n";
     }
 
-
     // ## 获取省市区  [POST /mybank-sign/list-region ]
     public static String getPostMethodUrl(MethodComment methodComment) {
         return "## " + methodComment.getComment() + "  [" + methodComment.getRequestMethod() + " " +
@@ -45,11 +44,9 @@ public class ApiMdUtils {
         return uri.toString();
     }
 
-
     public static String getHeaders() {
         return TAB + "+ Headers";
     }
-
 
     public static String getUrlParameters(MethodComment methodComment) {
         StringBuilder sb = new StringBuilder("+ Parameters \n");
@@ -69,7 +66,6 @@ public class ApiMdUtils {
     public static String getRequestContentType(MethodComment methodComment) {
         return "+ Request (" + methodComment.getReqContentType() + ") ";
     }
-
 
     public static String getBody(List<FieldComment> argComments) {
         if (argComments == null || argComments.size() == 0) {

@@ -29,7 +29,6 @@ public class StringUtils {
                     return false;
                 }
             }
-
             return true;
         } else {
             return true;
@@ -41,7 +40,7 @@ public class StringUtils {
      */
     public static String[] linesSplit (String comment) {
         if (isBlank(comment)) {
-            return null;
+            return new String[]{""};
         }
         int index = comment.indexOf("\n");
         if (index == -1){
