@@ -174,7 +174,8 @@ public class ParamUtils {
         SeeTag[] seeTags = methodDoc.seeTags();
         if (seeTags.length == 0) {
             log.error("响应对象中的Object对象类型未知,{}缺少@see类型注解", methodDoc.name());
-            throw new RuntimeException("响应对象中的Object对象类型未知,{}缺少@see类型注解");
+            return;
+//            throw new RuntimeException("响应对象中的Object对象类型未知,{}缺少@see类型注解");
         }
         if (mapTags.length > 0) {
             //map注解为1个时，表示data对象类型为list
