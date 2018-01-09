@@ -66,7 +66,7 @@ public class SpringMvcIntrospect implements Introspect {
                 List<FieldComment> comments = ParamUtils.inspectParam(rootDoc, methodDoc);
                 methodComment.setMethodArgumentComments(comments);
                 //处理返回值
-                FieldComment fieldComment = ParamUtils.inspectReturn(methodDoc);
+                FieldComment fieldComment = ParamUtils.inspectReturn(rootDoc,methodDoc);
                 String produces = StringUtils.replaceQuotes(
                         findMethodAnnotationValue(methodDoc, RequestMapping.class, "produces"));
                 methodComment.setRespContentType(produces == null ? classComment.getProduces() : produces);

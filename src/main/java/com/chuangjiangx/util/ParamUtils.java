@@ -108,9 +108,10 @@ public class ParamUtils {
 
     /**
      * 解析返回值
+     * @return FieldComment
      * TODO 方法太复杂，待优化
      */
-    public static FieldComment inspectReturn(MethodDoc methodDoc) {
+    public static FieldComment inspectReturn(RootDoc rootDoc,MethodDoc methodDoc) {
         FieldComment fieldComment = new FieldComment();
         List<FieldComment> fieldComments = new ArrayList<>();
         if (methodDoc.returnType().simpleTypeName().equals("void")) {
@@ -118,9 +119,21 @@ public class ParamUtils {
         } else {
             if (typeValue(methodDoc.returnType().simpleTypeName()) == null) {
                 ClassDoc classDoc = methodDoc.returnType().asClassDoc();
+                if (classDoc.isInterface()) {
+                    Tag[] tags = methodDoc.tags("return");
+                    if (tags == null || tags.length == 0) {
+                        log.error("retrun注解类名不能为空");
+                        return fieldComment;
+                    }
+                    classDoc = rootDoc.classNamed(tags[0].text());
+                    if (classDoc == null) {
+                        log.error("{}类未找到",tags[0].text());
+                        return fieldComment;
+                    }
+                }
+                List<FieldDoc> fieldDocList = new ArrayList<>();
                 FieldDoc[] fields = classDoc.fields(false);
                 ClassDoc superclass = classDoc.superclass();
-                List<FieldDoc> fieldDocList = new ArrayList<>();
                 fieldDocList.addAll(Arrays.asList(fields));
                 if (superclass != null) {
                     FieldDoc[] superFields = superclass.fields(false);
