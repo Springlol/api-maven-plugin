@@ -3,7 +3,7 @@
 <plugin>
     <groupId>com.chuangjiangx.plugin</groupId>
     <artifactId>api-generate</artifactId>
-    <version>1.3.3</version>
+    <version>1.3.8</version>
     <configuration>
         <targetClass>${project.build.sourceDirectory}/com/chuangjiangx/polypay/availability/controller/LklMerchantController.java</targetClass>
         <output>${project.basedir}/api-doc</output>
